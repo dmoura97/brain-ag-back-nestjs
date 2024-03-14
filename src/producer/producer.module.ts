@@ -7,6 +7,7 @@ import { CreateProducerPresenter } from "./ports/presenters/create-producer.pres
 import { DeleteProducerPresenter } from "./ports/presenters/delete-producer.presenter";
 import { UpdateProducerInteractor } from "./interactors/update-producer.interactor";
 import { UpdateProducerPresenter } from "./ports/presenters/update-producer.presenter";
+import { DataSourceTypeorm } from "src/config";
 
 
 @Module({
@@ -23,6 +24,10 @@ import { UpdateProducerPresenter } from "./ports/presenters/update-producer.pres
     {
       provide: 'ProducerRepository',
       useClass: ProducerDatabaseInMemory
+    },
+    {
+      provide: 'DataSource',
+      useValue: DataSourceTypeorm
     }
   ],
   controllers: []

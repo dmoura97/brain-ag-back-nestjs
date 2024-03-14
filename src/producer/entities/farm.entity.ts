@@ -10,7 +10,6 @@ export class Farm {
   private cultivableArea: number;
   private vegetationArea: number;
   private plantedCrops: PlantedCrops[];
-  private producer: Producer
 
   constructor(farmName: string, city: string, state: string, totalArea: number, cultivableArea: number, vegetationArea: number ) {
     this.farmName = farmName;
@@ -63,14 +62,6 @@ export class Farm {
 
   setPlantedCrops(plantedCrops: PlantedCrops[]){
     this.plantedCrops = plantedCrops;
-  }
-
-  getProducer(): Producer {
-    return this.producer;
-  }
-
-  setProducer(producer: Producer) {
-    this.producer = producer;
   }
 
   checkArea() {
