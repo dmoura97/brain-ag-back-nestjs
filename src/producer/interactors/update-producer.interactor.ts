@@ -4,15 +4,18 @@ import { ProducerRepository } from "../contracts/producer.repository";
 import { Producer } from "../entities/producer.entity";
 import { Farm } from "../entities/farm.entity";
 import { PlantedCrops } from "../../plantedCrops/entities/planted-crops.entity";
+import { UpdateProducerPresenter } from "../ports/presenters/update-producer.presenter";
+import { Presenter } from "src/shared/contracts/presenter";
 
 export class UpdateProducerInteractor {
   constructor(
     @Inject('ProducerRepository')
     private producerRepository: ProducerRepository,
     private plantedCropsService: PlantedCropsService,
+    private presenter: UpdateProducerPresenter
   ) {}
 
-  async execute(id: string, payload: any): Promise<any> {
+  async execute(id: string, payload: any): Promise<Presenter> {
     const producer: Producer = await this.producerRepository.getById(id);
     if(!producer) throw new Error('Producer not found');
     const plantedCrops: PlantedCrops[] = await this.plantedCropsService.fetchByIds(payload.farm.plantedCrops);
@@ -34,6 +37,8 @@ export class UpdateProducerInteractor {
     updatedProducer.setFarm(updatedFarm);
     const { idsToRemove, idsToAdd } = this.syncPlantedCrops(payload.farm.plantedCrops, producer.getFarm().getPlantedCrops());
     await this.producerRepository.update(id, updatedProducer, idsToRemove, idsToAdd);
+    this.presenter.setData(updatedProducer);
+    return this.presenter;
   }
 
   private syncPlantedCrops(newPlantedCrops: number[], oldPlantedCrops: PlantedCrops[]): { idsToRemove: number[], idsToAdd: number[] } {

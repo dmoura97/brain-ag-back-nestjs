@@ -7,6 +7,7 @@ import { CreateProducerInteractor } from "./create-producer.interactor";
 import { UpdateProducerInteractor } from "./update-producer.interactor";
 import { ProducerDatabaseInMemory } from "../repositories/in-memory/producer-database-in-memory";
 import { Producer } from "../entities/producer.entity";
+import { UpdateProducerPresenter } from "../ports/presenters/update-producer.presenter";
 
 describe('update-producer.interactor', () => {
   let createInteractor: CreateProducerInteractor;
@@ -29,7 +30,7 @@ describe('update-producer.interactor', () => {
           useClass: PlantedCropsDatabaseInMemory
         },
         CreateProducerPresenter,
-       // UpdateProducerPresenter
+        UpdateProducerPresenter
       ],
     }).compile();
     createInteractor = module.get<CreateProducerInteractor>(CreateProducerInteractor);

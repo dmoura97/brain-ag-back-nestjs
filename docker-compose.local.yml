@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  app:
+    image: node:16.20.1
+    container_name: app
+    working_dir: '/app'
+    tty: true
+    ports:
+      - 3001:3000
+    volumes:
+      - ${SOURCE}:/app
+    networks:
+      - brain-ag-net
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.4
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=brain-ag-local
+    ports:
+      - 5432:5432
+    volumes:
+      - db-finance-local:/var/lib/postgresql/data
+    networks:
+      - brain-ag-net
+
+volumes:
+  db-finance-local:
+
+networks:
+  brain-ag-net:
+    driver: bridge
