@@ -7,7 +7,6 @@ import { PlantedCrops } from "src/plantedCrops/entities/planted-crops.entity";
 import { ProducerFactory } from "src/producer/factories/producer.factor";
 import { Injectable } from "@nestjs/common";
 
-
 export type ProducerType = {
   id: string;
   document: string;
@@ -32,7 +31,7 @@ export class DatabaseTypeOrmRepository implements ProducerRepository {
   }
 
   async save(producer: Producer): Promise<string> {
-    const { plantedCrops, farm, ...producerData } = this.mapper.toDatabaseSchema(producer);
+    const { producerData, farm, plantedCrops } = this.mapper.toDatabaseSchema(producer);
     let producerId: string;
     await this.dataSource.transaction(async (transactionalEntityManager) => {
       const producerResult = await transactionalEntityManager
@@ -71,7 +70,7 @@ export class DatabaseTypeOrmRepository implements ProducerRepository {
 
   async update(id: string, producer: Producer, idsToRemove: number[], idsToAdd: number[]): Promise<void> {
     const farmId = producer.getFarm().getId();
-    const { plantedCrops, farm, ...producerData } = this.mapper.toDatabaseSchema(producer);
+    const { farm, producerData } = this.mapper.toDatabaseSchema(producer);
     await this.dataSource.transaction(async (transactionalEntityManager) => {
       await transactionalEntityManager.createQueryBuilder()
         .update('producer')
@@ -122,20 +121,21 @@ export class DatabaseTypeOrmRepository implements ProducerRepository {
         'p.id',
         'p.document',
         'p.name',
+        'f.id "farmId"',
         'f.farm_name "farmName"',
         'f.city',
         'f.state',
         'f.total_area "totalArea"',
         'f.cultivable_area "cultivableArea"',
         'f.vegetation_area "vegetationArea"',
-        'json_agg(json_build_object(\'id\', fpc.id, \'name\', fpc.name)) AS "plantedCrops"'
+        'json_agg(json_build_object(\'id\', pc.id, \'name\', pc.name)) AS "plantedCrops"'
       ])
       .from('producer', 'p')
       .leftJoin('farm', 'f', 'p.id = f.producer_id')
       .leftJoin('farm_planted_crops', 'fpc', 'f.id = fpc.farm_id')
       .leftJoin('planted_crops', 'pc', 'pc.id = fpc.planted_crops_id')
       .where('p.id = :id', { id })
-      .groupBy('p.id')
+      .groupBy('f.id, p.id')
       .getRawOne<ProducerType>();
   }
 }

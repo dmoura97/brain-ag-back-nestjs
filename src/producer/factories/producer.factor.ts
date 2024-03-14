@@ -15,8 +15,10 @@ export class ProducerFactory {
     farm.setPlantedCrops(
       payload.plantedCrops.map((crop) => new PlantedCrops(crop.id, crop.name))
     );
+    farm.setId(payload.farmId);
     const producer = Producer.create(payload.document, payload.name);
     producer.setFarm(farm);
+    producer.setId(payload.id)
     return producer;
   }
 }
