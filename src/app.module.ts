@@ -4,6 +4,7 @@ import { ProducerModule } from './producer/producer.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from './config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService]
     }),
     PlantedCropsModule,
-    ProducerModule
+    ProducerModule,
+    StatisticsModule
   ],
   controllers: [],
   providers: [],

@@ -9,7 +9,7 @@ import { DeleteProducerInteractor } from "./delete-producer.interactor";
 import { Producer } from "../entities/producer.entity";
 import { DeleteProducerPresenter } from "../ports/presenters/delete-producer.presenter";
 
-describe('update-producer.interactor', () => {
+describe('delete-producer.interactor', () => {
   let createInteractor: CreateProducerInteractor;
   let deleteInteractor: DeleteProducerInteractor;
   let module: TestingModule;

@@ -1,5 +1,4 @@
 import { PlantedCrops } from "../../plantedCrops/entities/planted-crops.entity";
-import { Producer } from "./producer.entity";
 
 export class Farm {
   private id?: string;
