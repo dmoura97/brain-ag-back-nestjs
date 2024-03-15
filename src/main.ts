@@ -1,17 +1,20 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DataSourceTypeorm } from './config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  const config = new DocumentBuilder()
+    .setTitle('Brain-ag')
+    .setDescription('The brain-ag API description')
+    .setVersion('1.0')
+    .addTag('brain-ag')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document)
+  
   await app.listen(3000);
-  DataSourceTypeorm.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!")
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization", err)
-  })
 }
 bootstrap();

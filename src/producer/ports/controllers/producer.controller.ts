@@ -7,9 +7,10 @@ import { UpdateProducerInteractor } from "src/producer/interactors/update-produc
 import { UpdateProducerDto } from "../dtos/update-producer.dto";
 import { DeleteProducerInteractor } from "src/producer/interactors/delete-producer.interactor";
 import { DeleteProducerResponseDto } from "../dtos/delete-producer-response.dto";
-
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @Controller('producer')
+@ApiTags('Producer')
 export class ProducerController {
   constructor(
     private readonly createProducerInteractor: CreateProducerInteractor,
@@ -18,6 +19,10 @@ export class ProducerController {
   ) {}
 
   @Post()
+  @ApiResponse({
+    type: CreateProducerResponseDto,
+    status: 201
+  })
   async create(
     @Body() newProducerDto: NewProducerDto
   ): Promise<CreateProducerResponseDto> {
@@ -26,6 +31,10 @@ export class ProducerController {
   }
 
   @Put('/:id')
+  @ApiResponse({
+    type: UpdateProducerResponseDto,
+    status: 200
+  })
   async update(
     @Param('id') id: string,
     @Body() updateProducer: UpdateProducerDto
@@ -35,6 +44,10 @@ export class ProducerController {
   }
 
   @Delete('/:id')
+  @ApiResponse({
+    type: DeleteProducerResponseDto,
+    status: 200
+  })
   async delete(
     @Param('id') id: string,
   ): Promise<DeleteProducerResponseDto> {
