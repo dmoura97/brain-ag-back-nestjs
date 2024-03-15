@@ -44,11 +44,14 @@ $ docker exec -it app bash
 # Instale as dependências
 $ npm i
 
+# Rode as migrations
+$ npm run migration:run
+
 # Iniciar a aplicação
 $ npm run start:dev
 
 # Caso queria rodar os test
-$ npx jest
+$ npm run test
 ```
 <h2> 📄 Documentação da API</h2>
 A documentação da API está disponível no Swagger UI. Você pode acessá-la navegando até <strong>/api</strong> no seu navegador após iniciar a aplicação. Caso você não tenha alterado a porta da API, a URL será <strong>http://localhost:3001/api</strong>.

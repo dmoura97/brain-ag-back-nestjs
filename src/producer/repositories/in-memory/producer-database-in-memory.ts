@@ -1,16 +1,10 @@
 import { randomUUID } from "crypto";
-import { PlantedCropsDatabaseInMemory } from "../../../plantedCrops/repositories/in-memory/planted-crops-database-in-memory";
 import { ProducerRepository } from "../../contracts/producer.repository";
 import { Producer } from "../../entities/producer.entity";
 
 export class ProducerDatabaseInMemory implements ProducerRepository {
   private data: Producer[] = [];
   private farm_plantedCrops = [];
-  private plantedCropsData: PlantedCropsDatabaseInMemory;
-
-  constructor() {
-    this.plantedCropsData = new PlantedCropsDatabaseInMemory();
-  }
 
   async save(producer: Producer): Promise<string> {
     producer.setId(randomUUID());

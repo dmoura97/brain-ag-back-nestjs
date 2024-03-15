@@ -68,7 +68,7 @@ export class Farm {
 
   checkArea() {
     const total = this.cultivableArea + this.vegetationArea;
-    if(total > this.totalArea) throw new CustomException(ErrorsEnum.INVALID_AREA, HttpStatus.BAD_REQUEST, 'INVALID AREA')
+    if(total > this.totalArea) throw new CustomException(ErrorsEnum.INVALID_AREA, HttpStatus.BAD_REQUEST, 'INVALID_AREA')
   }
 
 }

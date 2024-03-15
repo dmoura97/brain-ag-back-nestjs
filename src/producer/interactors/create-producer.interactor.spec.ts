@@ -5,6 +5,7 @@ import { PlantedCropsService } from "../../plantedCrops/services/planted-crops.s
 import { PlantedCropsDatabaseInMemory } from "../../plantedCrops/repositories/in-memory/planted-crops-database-in-memory";
 import { NewProducerDto } from "../ports/dtos/new-producer.dto";
 import { CreateProducerPresenter } from "../ports/presenters/create-producer.presenter";
+import { ErrorsEnum } from "../../shared/errors.enum";
 
 
 describe('create-producer.interactor', () => {
@@ -37,71 +38,90 @@ describe('create-producer.interactor', () => {
       document: '123.456.789-09',
       name: 'John Doe'
     }
-    dto.farm =  {
+    dto.farm = {
       farmName: 'Happy Farm',
       city: 'City A',
       state: 'State X',
       totalArea: 1000,
       cultivableArea: 800,
       vegetationArea: 200,
-      plantedCrops: [1,2],
+      plantedCrops: [1, 2],
     }
     const result = await interactor.execute(dto);
     expect(result.httpResponse().producerId).toBeDefined();
   });
+  describe('should return error when', () => {
+    it('producer with an invalid document', async () => {
+      const dto = new NewProducerDto();
+      dto.producer = {
+        document: 'invalid-document',
+        name: 'John Doe'
+      }
+      dto.farm = {
+        farmName: 'Happy Farm',
+        city: 'City A',
+        state: 'State X',
+        totalArea: 1000,
+        cultivableArea: 800,
+        vegetationArea: 200,
+        plantedCrops: [1, 2],
+      }
+      try {
+        await interactor.execute(dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.INVALID_DOCUMENT)
+        expect(error.httpStatus).toBe(400)
+        expect(error.errorType).toBe('INVALID_DOCUMENT')
+      }
+    });
 
-  it('should not be possible to create a producer with an invalid document', async () => {
-    const dto = new NewProducerDto();
-    dto.producer = {
-      document: 'invalid-document',
-      name: 'John Doe'
-    }
-    dto.farm =  {
-      farmName: 'Happy Farm',
-      city: 'City A',
-      state: 'State X',
-      totalArea: 1000,
-      cultivableArea: 800,
-      vegetationArea: 200,
-      plantedCrops: [1,2],
-    }
-    await expect(() => interactor.execute(dto)).rejects.toThrow(new Error('Invalid document'));
-  });
+    it('sum of cultivable area and vegetation area exceed the total area', async () => {
+      const dto = new NewProducerDto();
+      dto.producer = {
+        document: 'invalid-document',
+        name: 'John Doe'
+      }
+      dto.farm = {
+        farmName: 'Happy Farm',
+        city: 'City A',
+        state: 'State X',
+        totalArea: 1000,
+        cultivableArea: 800,
+        vegetationArea: 400,
+        plantedCrops: [1, 2],
+      }
+      try {
+        await interactor.execute(dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.INVALID_AREA)
+        expect(error.httpStatus).toBe(400)
+        expect(error.errorType).toBe('INVALID_AREA')
+      }
+    });
 
-  it('should not be possible to create a producer when sum of cultivable area and vegetation area exceed the total area', async () => {
-    const dto = new NewProducerDto();
-    dto.producer = {
-      document: 'invalid-document',
-      name: 'John Doe'
-    }
-    dto.farm =  {
-      farmName: 'Happy Farm',
-      city: 'City A',
-      state: 'State X',
-      totalArea: 1000,
-      cultivableArea: 800,
-      vegetationArea: 400,
-      plantedCrops: [1,2],
-    }
-    await expect(() => interactor.execute(dto)).rejects.toThrow(new Error('The sum of cultivable area and vegetation area cannot exceed the total area of the farm'));
-  });
-
-  it('should not be possible to create a producer with planted crops invalid', async () => {
-    const dto = new NewProducerDto();
-    dto.producer = {
-      document: 'invalid-document',
-      name: 'John Doe'
-    }
-    dto.farm =  {
-      farmName: 'Happy Farm',
-      city: 'City A',
-      state: 'State X',
-      totalArea: 1000,
-      cultivableArea: 800,
-      vegetationArea: 200,
-      plantedCrops: [1,2,8],
-    }
-    await expect(() => interactor.execute(dto)).rejects.toThrow(new Error('Invalid planted crops'));
-  });
+    it('should not be possible to create a producer with planted crops invalid', async () => {
+      const dto = new NewProducerDto();
+      dto.producer = {
+        document: 'invalid-document',
+        name: 'John Doe'
+      }
+      dto.farm = {
+        farmName: 'Happy Farm',
+        city: 'City A',
+        state: 'State X',
+        totalArea: 1000,
+        cultivableArea: 800,
+        vegetationArea: 200,
+        plantedCrops: [1, 2, 8],
+      }
+      try {
+        await interactor.execute(dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.INVALID_CROPS)
+        expect(error.httpStatus).toBe(400)
+        expect(error.errorType).toBe('INVALID_CROPS')
+      }
+    });
+  })
 
 });

@@ -9,6 +9,7 @@ import { ProducerDatabaseInMemory } from "../repositories/in-memory/producer-dat
 import { Producer } from "../entities/producer.entity";
 import { UpdateProducerPresenter } from "../ports/presenters/update-producer.presenter";
 import { UpdateProducerDto } from "../ports/dtos/update-producer.dto";
+import { ErrorsEnum } from "../../shared/errors.enum";
 
 describe('update-producer.interactor', () => {
   let createInteractor: CreateProducerInteractor;
@@ -80,58 +81,101 @@ describe('update-producer.interactor', () => {
     expect(producer.getFarm().getCity()).toBe('City B');
     expect(producer.getFarm().getState()).toBe('State Y');
   });
+  describe('should return error when', () => {
+    it('producer invalid document', async () => {
+      const dto = new UpdateProducerDto();
+      dto.producer = {
+        document: 'invalid-document',
+        name: 'John Doe Updated'
+      }
+      dto.farm =  {
+        farmName: 'Happy Farm Updated',
+        city: 'City B',
+        state: 'State Y',
+        totalArea: 1200,
+        cultivableArea: 100,
+        vegetationArea: 200,
+        plantedCrops: [3,4,5],
+      }
+      try {
+        await updateInteractor.execute(producerId, dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.INVALID_DOCUMENT)
+        expect(error.httpStatus).toBe(400)
+        expect(error.errorType).toBe('INVALID_DOCUMENT')
+      }
+    });
 
-  it('should not be possible to update a producer with an invalid document', async () => {
-    const dto = new UpdateProducerDto();
-    dto.producer = {
-      document: 'invalid-document',
-      name: 'John Doe Updated'
-    }
-    dto.farm =  {
-      farmName: 'Happy Farm Updated',
-      city: 'City B',
-      state: 'State Y',
-      totalArea: 1200,
-      cultivableArea: 100,
-      vegetationArea: 200,
-      plantedCrops: [3,4,5],
-    }
-    await expect(() => updateInteractor.execute(producerId, dto)).rejects.toThrow(new Error('Invalid document'));
-  });
-
-  it('should not be possible to update a producer when sum of cultivable area and vegetation area exceed the total area', async () => {
-    const dto = new UpdateProducerDto();
-    dto.producer = {
-      document: '101.405.814-72',
-      name: 'John Doe Updated'
-    }
-    dto.farm =  {
-      farmName: 'Happy Farm Updated',
-      city: 'City B',
-      state: 'State Y',
-      totalArea: 1200,
-      cultivableArea: 1000,
-      vegetationArea: 400,
-      plantedCrops: [3,4,5],
-    }
-    await expect(() => updateInteractor.execute(producerId, dto)).rejects.toThrow(new Error('The sum of cultivable area and vegetation area cannot exceed the total area of the farm'));
-  });
-
-  it('should not be possible to update a producer with planted crops invalid', async () => {
-    const dto = new UpdateProducerDto();
-    dto.producer = {
-      document: '101.405.814-72',
-      name: 'John Doe Updated'
-    }
-    dto.farm =  {
-      farmName: 'Happy Farm Updated',
-      city: 'City B',
-      state: 'State Y',
-      totalArea: 1200,
-      cultivableArea: 1000,
-      vegetationArea: 100,
-      plantedCrops: [3,4,5,8,9],
-    }
-    await expect(() => updateInteractor.execute(producerId, dto)).rejects.toThrow(new Error('Invalid planted crops'));
-  });
+    it('producer id not exists', async () => {
+      const dto = new UpdateProducerDto();
+      dto.producer = {
+        document: 'invalid-document',
+        name: 'John Doe Updated'
+      }
+      dto.farm =  {
+        farmName: 'Happy Farm Updated',
+        city: 'City B',
+        state: 'State Y',
+        totalArea: 1200,
+        cultivableArea: 100,
+        vegetationArea: 200,
+        plantedCrops: [3,4,5],
+      }
+      try {
+        await updateInteractor.execute('producerId', dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.PRODUCER_NOT_FOUND)
+        expect(error.httpStatus).toBe(404)
+        expect(error.errorType).toBe('PRODUCER_NOT_FOUND')
+      }
+    });
+  
+    it('sum of cultivable area and vegetation area exceed the total area', async () => {
+      const dto = new UpdateProducerDto();
+      dto.producer = {
+        document: '101.405.814-72',
+        name: 'John Doe Updated'
+      }
+      dto.farm =  {
+        farmName: 'Happy Farm Updated',
+        city: 'City B',
+        state: 'State Y',
+        totalArea: 1200,
+        cultivableArea: 1000,
+        vegetationArea: 400,
+        plantedCrops: [3,4,5],
+      }
+      try {
+        await updateInteractor.execute(producerId, dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.INVALID_AREA)
+        expect(error.httpStatus).toBe(400)
+        expect(error.errorType).toBe('INVALID_AREA')
+      }
+    });
+  
+    it('planted crops invalid', async () => {
+      const dto = new UpdateProducerDto();
+      dto.producer = {
+        document: '101.405.814-72',
+        name: 'John Doe Updated'
+      }
+      dto.farm =  {
+        farmName: 'Happy Farm Updated',
+        city: 'City B',
+        state: 'State Y',
+        totalArea: 1200,
+        cultivableArea: 1000,
+        vegetationArea: 100,
+        plantedCrops: [3,4,5,8,9],
+      }
+      try {
+        await updateInteractor.execute(producerId, dto)
+      } catch (error) {
+        expect(error.message).toBe(ErrorsEnum.INVALID_CROPS)
+        expect(error.httpStatus).toBe(400)
+        expect(error.errorType).toBe('INVALID_CROPS')
+      }
+    });
+  })
 });
