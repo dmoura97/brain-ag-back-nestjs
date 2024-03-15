@@ -8,6 +8,7 @@ import { UpdateProducerInteractor } from "./update-producer.interactor";
 import { ProducerDatabaseInMemory } from "../repositories/in-memory/producer-database-in-memory";
 import { Producer } from "../entities/producer.entity";
 import { UpdateProducerPresenter } from "../ports/presenters/update-producer.presenter";
+import { UpdateProducerDto } from "../ports/dtos/update-producer.dto";
 
 describe('update-producer.interactor', () => {
   let createInteractor: CreateProducerInteractor;
@@ -55,7 +56,7 @@ describe('update-producer.interactor', () => {
   });
 
   it('should update a producer', async () => {
-    const dto = new NewProducerDto();
+    const dto = new UpdateProducerDto();
     dto.producer = {
       document: '101.405.814-72',
       name: 'John Doe Updated'
@@ -81,7 +82,7 @@ describe('update-producer.interactor', () => {
   });
 
   it('should not be possible to update a producer with an invalid document', async () => {
-    const dto = new NewProducerDto();
+    const dto = new UpdateProducerDto();
     dto.producer = {
       document: 'invalid-document',
       name: 'John Doe Updated'
@@ -99,7 +100,7 @@ describe('update-producer.interactor', () => {
   });
 
   it('should not be possible to update a producer when sum of cultivable area and vegetation area exceed the total area', async () => {
-    const dto = new NewProducerDto();
+    const dto = new UpdateProducerDto();
     dto.producer = {
       document: '101.405.814-72',
       name: 'John Doe Updated'
@@ -117,7 +118,7 @@ describe('update-producer.interactor', () => {
   });
 
   it('should not be possible to update a producer with planted crops invalid', async () => {
-    const dto = new NewProducerDto();
+    const dto = new UpdateProducerDto();
     dto.producer = {
       document: '101.405.814-72',
       name: 'John Doe Updated'

@@ -1,7 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 class Producer{
+  @ApiProperty()
   document: string;
+  @ApiProperty()
   name: string;
 }
 

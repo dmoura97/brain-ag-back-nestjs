@@ -25,12 +25,12 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - db-finance-local:/var/lib/postgresql/data
+      - db-brain-ag-local:/var/lib/postgresql/data
     networks:
       - brain-ag-net
 
 volumes:
-  db-finance-local:
+  db-brain-ag-local:
 
 networks:
   brain-ag-net:
