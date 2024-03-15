@@ -1,7 +1,11 @@
+import { HttpStatus } from "@nestjs/common";
+import { ErrorsEnum } from "../../shared/errors.enum";
+import { CustomException } from "./../../shared/errors/custom-error.exception";
+
 export class Document {
 
   constructor(readonly value: string) {
-    if (!this.validate(value)) throw new Error("Invalid document");
+    if (!this.validate(value)) throw new CustomException(ErrorsEnum.INVALID_DOCUMENT, HttpStatus.BAD_REQUEST, 'INVALID_DOCUMENT')
     this.value = this.clean(value);
   }
 

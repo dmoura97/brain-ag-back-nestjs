@@ -1,11 +1,13 @@
-import { Inject } from "@nestjs/common";
+import { HttpStatus, Inject } from "@nestjs/common";
 import { PlantedCropsService } from "../../plantedCrops/services/planted-crops.service";
 import { ProducerRepository } from "../contracts/producer.repository";
 import { Farm } from "../entities/farm.entity";
 import { Producer } from "../entities/producer.entity";
 import { NewProducerDto } from "../ports/dtos/new-producer.dto";
-import { Presenter } from "src/shared/contracts/presenter";
+import { Presenter } from "../../shared/contracts/presenter";
 import { CreateProducerPresenter } from "../ports/presenters/create-producer.presenter";
+import { ErrorsEnum } from "../../shared/errors.enum";
+import { CustomException } from "../../shared/errors/custom-error.exception";
 
 export class CreateProducerInteractor {
   constructor(
@@ -18,7 +20,7 @@ export class CreateProducerInteractor {
   async execute(payload: NewProducerDto): Promise<Presenter> {
     const plantedCrops = await this.plantedCropsService.fetchByIds(payload.farm.plantedCrops);
     if(plantedCrops.length !== payload.farm.plantedCrops.length) {
-      throw new Error('Invalid planted crops');
+      throw new CustomException(ErrorsEnum.INVALID_CROPS, HttpStatus.BAD_REQUEST, 'INVALID_CROPS')
     }
     const farm = Farm.create(
       payload.farm.farmName,

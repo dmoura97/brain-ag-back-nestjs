@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from './config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StatisticsModule } from './statistics/statistics.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { StatisticsModule } from './statistics/statistics.module';
     }),
     PlantedCropsModule,
     ProducerModule,
-    StatisticsModule
+    StatisticsModule,
+    SharedModule
   ],
   controllers: [],
   providers: [],

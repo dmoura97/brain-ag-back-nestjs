@@ -1,3 +1,6 @@
+import { HttpStatus } from "@nestjs/common";
+import { ErrorsEnum } from "../../shared/errors.enum";
+import { CustomException } from "../../shared/errors/custom-error.exception";
 import { PlantedCrops } from "../../plantedCrops/entities/planted-crops.entity";
 
 export class Farm {
@@ -65,7 +68,7 @@ export class Farm {
 
   checkArea() {
     const total = this.cultivableArea + this.vegetationArea;
-    if(total > this.totalArea) throw new Error('The sum of cultivable area and vegetation area cannot exceed the total area of the farm')
+    if(total > this.totalArea) throw new CustomException(ErrorsEnum.INVALID_AREA, HttpStatus.BAD_REQUEST, 'INVALID AREA')
   }
 
 }
