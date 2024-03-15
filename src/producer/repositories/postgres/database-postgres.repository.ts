@@ -42,7 +42,6 @@ export class DatabasePostgresRepository implements ProducerRepository {
   }
 
   async getById(id: string): Promise<Producer> {
-    console.log(id)
     const [queryResult] = await this.connection.query(
       `SELECT
         p.id,
