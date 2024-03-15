@@ -21,6 +21,9 @@ O mesmo consiste em um cadastro de produtor rural com os seguintes dados:
 - O sistema deverá validar CPF e CNPJ digitados incorretamente.
 - A soma de área agrícultável e vegetação, não deverá ser maior que a área total da fazenda
 - Cada produtor pode plantar mais de uma cultura em sua Fazenda.
+- Exibir: 
+  * Total de fazendas em quantidade
+  * Total de fazendas em hectares (área total)
 
 <h2>👷 Como Utilizar</h2>
 
