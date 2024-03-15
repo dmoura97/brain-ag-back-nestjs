@@ -57,4 +57,4 @@ $ npm run start:dev
 $ npm run test
 ```
 <h2> 📄 Documentação da API</h2>
-A documentação da API está disponível no Swagger UI. Você pode acessá-la navegando até <strong>/api</strong> no seu navegador após iniciar a aplicação. Caso você não tenha alterado a porta da API, a URL será <strong>http://localhost:3001/api</strong>.
+A documentação da API está disponível no Swagger UI. Você pode acessá-la navegando até <strong>/api</strong> no seu navegador após iniciar a aplicação. Caso você não tenha alterado a porta da API, a URL será <strong>http://localhost:3001/api</strong>
