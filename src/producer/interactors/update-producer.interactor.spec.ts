@@ -106,7 +106,7 @@ describe('update-producer.interactor', () => {
       }
     });
 
-    it('producer id not exists', async () => {
+    it('producer not exists', async () => {
       const dto = new UpdateProducerDto();
       dto.producer = {
         document: 'invalid-document',

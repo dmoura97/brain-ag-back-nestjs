@@ -10,6 +10,9 @@ import { UpdateProducerPresenter } from "./ports/presenters/update-producer.pres
 import { DataSourceTypeorm } from "src/config";
 import { ProducerController } from "./ports/controllers/producer.controller";
 import { DatabaseTypeOrmRepository } from "./repositories/typeorm/database-typeorm.repository";
+import { DatabasePostgresRepository } from "./repositories/postgres/database-postgres.repository";
+import {PgPromiseAdapter} from "src/shared/adapters/pq-promise.adapter";
+import {  DatabaseConnection } from '../shared/contracts/DatabaseConnection'
 
 
 @Module({
@@ -27,10 +30,15 @@ import { DatabaseTypeOrmRepository } from "./repositories/typeorm/database-typeo
       provide: 'ProducerRepository',
       //useClass: ProducerDatabaseInMemory
       useClass: DatabaseTypeOrmRepository
+      //useClass: DatabasePostgresRepository
     },
     {
       provide: 'DataSource',
       useValue: DataSourceTypeorm
+    },
+    {
+      provide: 'DatabaseConnection',
+      useClass: PgPromiseAdapter
     }
   ],
   controllers: [ProducerController]

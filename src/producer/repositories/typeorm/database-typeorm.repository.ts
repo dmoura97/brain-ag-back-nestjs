@@ -111,8 +111,12 @@ export class DatabaseTypeOrmRepository implements ProducerRepository {
     .execute()
   }
 
-  getPlantedCropsByFarmId(farmId: string): Promise<any[]> {
-    throw new Error("Method not implemented.");
+  async getPlantedCropsByFarmId(farmId: string): Promise<any[]> {
+    return this.dataSource.createQueryBuilder()
+      .select('*')
+      .from('farm_planted_crops', 'fpc')
+      .where('fpc.farm_id = :farmId', { farmId })
+    .getMany();
   }
 
   async fetchTransfer(id: string): Promise<ProducerType> {
